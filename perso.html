@@ -14,9 +14,9 @@
             width: 100vw;
             display: flex;
             flex-direction: column;
-            padding: 5vw; /* Padding adaptatif */
+            padding: 5vw; /* Padding relatif */
             box-sizing: border-box;
-            overflow: hidden; /* Crucial pour éviter le scroll durant le glitch */
+            overflow: hidden; /* Empêche le scroll moche pendant le glitch */
         }
 
         /* --- Effet CRT / Scanlines --- */
@@ -32,13 +32,14 @@
             pointer-events: none;
         }
 
-        /* Halo vert en arrière-plan */
+        /* Halo vert en arrière-plan (Ajusté pour PC et Mobile) */
         .background-halo {
             position: fixed;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             width: 0; height: 0;
-            background: radial-gradient(circle, rgba(0, 255, 65, 0.25) 0%, rgba(0, 0, 0, 0) 70%);
+            /* Radial gradient plus doux */
+            background: radial-gradient(circle, rgba(0, 255, 65, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
             border-radius: 50%;
             z-index: 1;
             opacity: 0;
@@ -47,18 +48,19 @@
 
         .background-halo.visible {
             opacity: 1;
-            width: 200vw; /* Augmenté pour couvrir les angles en rotation */
-            height: 200vw;
+            width: 180vw; /* Couvre tout l'écran sans déborder */
+            height: 180vh;
         }
 
-        /* --- Terminal calé en haut à gauche --- */
+        /* --- Terminal (Haut gauche) --- */
         #terminal {
             align-self: flex-start;
             width: 100%;
             max-width: 100%;
             white-space: pre-wrap;
             line-height: 1.4;
-            font-size: clamp(0.75rem, 2vw, 1rem); /* Taille adaptative */
+            /* Scalabilité du texte : Clamp(Min, Adaptatif, Max) */
+            font-size: clamp(0.75rem, 2vw, 1rem); 
             z-index: 5;
             transition: opacity 0.5s ease;
         }
@@ -74,7 +76,7 @@
         }
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* --- Container du Message Final --- */
+        /* --- Message Final (Glitch Fix) --- */
         .final-container {
             position: absolute;
             top: 50%; left: 50%;
@@ -86,7 +88,8 @@
         }
 
         .final-message {
-            font-size: clamp(1.2rem, 8vw, 3.5rem); /* Scalabilité du texte */
+            /* Police scalable : s'adapte à la largeur de l'écran */
+            font-size: clamp(1.2rem, 7vw, 3.5rem); 
             font-weight: 900;
             color: #fff;
             text-transform: uppercase;
@@ -95,12 +98,10 @@
             /* Glitch chromatique optimisé */
             text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00;
             animation: glitch 1s infinite;
-            word-wrap: break-word;
+            word-wrap: break-word; /* Crucial pour mobile */
         }
 
-        
-
-        /* --- Animations --- */
+        /* Animations */
         @keyframes glitch {
             0% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; }
             15% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; }
