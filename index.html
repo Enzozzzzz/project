@@ -41,31 +41,28 @@
         const loaderBox = document.querySelector('.terminal-loader');
 
         button.addEventListener('click', () => {
-            // 1. Cacher le bouton
+            
             mainUi.classList.add('fade-out');
             
             setTimeout(() => {
-                // 2. Afficher le terminal
+                
                 terminalScreen.classList.add('active');
                 
                 setTimeout(() => {
-                    // 3. TRANSITION CRITIQUE : On passe au noir total
-                    // On rend le fond du wrapper totalement opaque et noir
+                    
                     terminalScreen.style.background = "black";
                     terminalScreen.style.backdropFilter = "none";
-                    
-                    // On fait disparaître la boîte de texte du terminal
                     loaderBox.style.opacity = '0';
 
-                    // 4. On attend que le noir soit bien installé avant de changer de page
+                   
                     setTimeout(() => {
                         window.location.href = "perso.html";
                     }, 600);
-                }, 5000); // 5 secondes de loading
+                }, 5000); // 5 sec de loading
             }, 500); 
         });
 
-        // Reset pour le bouton "Retour" du navigateur
+        
         window.addEventListener('pageshow', (event) => {
             mainUi.classList.remove('fade-out');
             terminalScreen.classList.remove('active');

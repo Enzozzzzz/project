@@ -10,17 +10,20 @@
             color: #00ff41; 
             font-family: 'Courier New', monospace;
             opacity: 0;
-            /* Fondu d'entrée doux pour accueillir l'utilisateur */
-            animation: fadeInPage 1s ease forwards;
+            animation: fadeIn 1s ease forwards;
         }
 
-        @keyframes fadeInPage {
+        @keyframes fadeIn {
             to { opacity: 1; }
         }
 
-        .terminal-text { padding: 50px; font-size: 1.1rem; line-height: 1.8; }
-        .cursor { display: inline-block; width: 10px; height: 20px; background: #00ff41; animation: blink 1s infinite; vertical-align: middle; }
+        .terminal-text { padding: 30px; font-size: 1.1rem; line-height: 1.8; }
+        .cursor { display: inline-block; width: 8px; height: 18px; background: #00ff41; animation: blink 1s infinite; vertical-align: middle; }
         @keyframes blink { 50% { opacity: 0; } }
+
+        @media screen and (max-width: 768px) {
+            .terminal-text { font-size: 0.9rem; padding: 20px; }
+        }
     </style>
 </head>
 <body>

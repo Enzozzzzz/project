@@ -1,4 +1,9 @@
-/* --- Global --- */
+
+* {
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+}
+
 body, html {
     margin: 0; padding: 0;
     height: 100%; width: 100%;
@@ -7,7 +12,7 @@ body, html {
     background-color: #000;
 }
 
-/* --- Vidéo (Luminosité corrigée) --- */
+/* --- Vidéo --- */
 .video-background {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -17,11 +22,10 @@ body, html {
 .video-background video {
     width: 100%; height: 100%;
     object-fit: cover;
-    /* Luminosité à 0.6 pour un bon compromis visuel */
     filter: brightness(0.6) contrast(1.1) sepia(100%) hue-rotate(90deg);
 }
 
-/* --- Conteneurs --- */
+
 .content {
     position: relative;
     display: flex;
@@ -30,6 +34,7 @@ body, html {
     height: 100vh;
     z-index: 2;
     transition: opacity 0.5s ease;
+    will-change: opacity;
 }
 
 .terminal-wrapper {
@@ -43,8 +48,8 @@ body, html {
     backdrop-filter: blur(10px);
     opacity: 0;
     pointer-events: none;
-    /* On ajoute background à la transition pour le passage au noir */
     transition: opacity 0.8s ease, background 0.5s ease;
+    will-change: opacity, background;
 }
 
 .terminal-wrapper.active {
@@ -52,11 +57,9 @@ body, html {
     pointer-events: auto !important;
 }
 
-.fade-out {
-    opacity: 0 !important;
-}
+.fade-out { opacity: 0 !important; }
 
-/* --- Style Terminal (Uiverse) --- */
+
 .terminal-loader {
     border: 0.1em solid #333;
     background-color: #1a1a1a;
@@ -115,4 +118,23 @@ body, html {
     background: #00ff41;
     color: #000;
     box-shadow: 0 0 20px #00ff41;
+}
+
+/* --- RESPONSIVITÉ --- */
+@media screen and (max-width: 768px) {
+    .glitch-btn {
+        width: 80%;
+        max-width: 280px;
+        font-size: 16px;
+    }
+    .terminal-loader {
+        width: 90%;
+        max-width: 300px;
+        font-size: 1em;
+    }
+}
+
+@media screen and (max-height: 450px) {
+    .terminal-loader { transform: scale(0.7); }
+    .content { align-items: flex-end; padding-bottom: 20px; }
 }
