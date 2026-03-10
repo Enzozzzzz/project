@@ -14,12 +14,12 @@
             width: 100vw;
             display: flex;
             flex-direction: column;
-            padding: 5vw; /* Padding relatif */
+            padding: 20px;
             box-sizing: border-box;
-            overflow: hidden; /* Empêche le scroll moche pendant le glitch */
+            overflow: hidden;
         }
 
-        /* --- Effet CRT / Scanlines --- */
+        /* --- Effet CRT --- */
         body::after {
             content: " ";
             display: block;
@@ -32,14 +32,13 @@
             pointer-events: none;
         }
 
-        /* Halo vert en arrière-plan (Ajusté pour PC et Mobile) */
+        /* Halo vert réduit pour ne pas déborder sur PC */
         .background-halo {
             position: fixed;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             width: 0; height: 0;
-            /* Radial gradient plus doux */
-            background: radial-gradient(circle, rgba(0, 255, 65, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+            background: radial-gradient(circle, rgba(0, 255, 65, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
             border-radius: 50%;
             z-index: 1;
             opacity: 0;
@@ -48,35 +47,29 @@
 
         .background-halo.visible {
             opacity: 1;
-            width: 180vw; /* Couvre tout l'écran sans déborder */
-            height: 180vh;
+            width: 100vmax; /* Taille plus équilibrée */
+            height: 100vmax;
         }
 
-        /* --- Terminal (Haut gauche) --- */
+        /* --- Terminal --- */
         #terminal {
             align-self: flex-start;
-            width: 100%;
-            max-width: 100%;
-            white-space: pre-wrap;
-            line-height: 1.4;
-            /* Scalabilité du texte : Clamp(Min, Adaptatif, Max) */
-            font-size: clamp(0.75rem, 2vw, 1rem); 
             z-index: 5;
+            font-size: clamp(0.7rem, 1.5vw, 0.9rem);
             transition: opacity 0.5s ease;
         }
 
-        .line { margin-bottom: 4px; overflow-wrap: break-word; }
+        .line { margin-bottom: 4px; }
         .cursor {
             display: inline-block;
             width: 8px; height: 1.1em;
             background: #00ff41;
             margin-left: 4px;
             animation: blink 0.8s infinite;
-            vertical-align: middle;
         }
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* --- Message Final (Glitch Fix) --- */
+        /* --- Message Final (FORCÉ EN 2 LIGNES) --- */
         .final-container {
             position: absolute;
             top: 50%; left: 50%;
@@ -84,52 +77,40 @@
             z-index: 15;
             display: none;
             text-align: center;
-            width: 90%; /* Évite de toucher les bords sur mobile */
+            width: 100%;
         }
 
         .final-message {
-            /* Police scalable : s'adapte à la largeur de l'écran */
-            font-size: clamp(1.2rem, 7vw, 3.5rem); 
+            display: flex;
+            flex-direction: column; /* Force le retour à la ligne */
+            align-items: center;
             font-weight: 900;
             color: #fff;
             text-transform: uppercase;
-            letter-spacing: clamp(2px, 2vw, 10px);
-            position: relative;
-            /* Glitch chromatique optimisé */
+            /* Police s'adaptant parfaitement à l'écran */
+            font-size: clamp(1.8rem, 10vw, 4rem);
+            line-height: 1.1;
+            letter-spacing: 0.2em;
             text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00;
-            animation: glitch 1s infinite;
-            word-wrap: break-word; /* Crucial pour mobile */
+            animation: glitch 1s infinite, shake 0.3s infinite;
         }
 
-        /* Animations */
+        .final-message span {
+            display: block; /* Force chaque bloc de texte sur sa ligne */
+        }
+
+        /* --- Animations --- */
         @keyframes glitch {
             0% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; }
-            15% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; }
             16% { text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff, -0.05em -0.05em 0 #fffc00; }
-            49% { text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff, -0.05em -0.05em 0 #fffc00; }
             50% { text-shadow: 0.035em 0.05em 0 #00fffc, 0.05em 0 0 #fc00ff, 0 -0.05em 0 #fffc00; }
-            99% { text-shadow: 0.035em 0.05em 0 #00fffc, 0.05em 0 0 #fc00ff, 0 -0.05em 0 #fffc00; }
             100% { text-shadow: -0.025em 0 0 #00fffc, -0.025em -0.025em 0 #fc00ff, -0.025em -0.05em 0 #fffc00; }
         }
 
-        /* Tremblement de la box */
-        .final-container.shake {
-            animation: shake 0.4s infinite;
-        }
-
         @keyframes shake {
-            0% { transform: translate(-50%, -50%) translate(1px, 1px); }
-            20% { transform: translate(-50%, -50%) translate(-2px, -1px); }
-            40% { transform: translate(-50%, -50%) translate(2px, 2px); }
-            60% { transform: translate(-50%, -50%) translate(-1px, 1px); }
-            80% { transform: translate(-50%, -50%) translate(2px, -2px); }
-            100% { transform: translate(-50%, -50%) translate(0, 0); }
-        }
-
-        /* --- Media Queries pour mobile paysage --- */
-        @media screen and (max-height: 500px) {
-            #terminal { font-size: 0.7rem; line-height: 1.1; }
-            .final-message { font-size: 1.2rem; }
+            0% { transform: translate(1px, 1px); }
+            50% { transform: translate(-1px, -1px); }
+            100% { transform: translate(0, 0); }
         }
     </style>
 </head>
@@ -137,8 +118,11 @@
     <div class="background-halo" id="halo"></div>
     <div id="terminal"></div>
 
-    <div id="final-container" class="final-container shake">
-        <div class="final-message">YOU ARE GETTING XENOTED</div>
+    <div id="final-container" class="final-container">
+        <div class="final-message">
+            <span>YOU ARE GETTING</span>
+            <span>XENOTED</span>
+        </div>
     </div>
 
     <script>
@@ -149,24 +133,17 @@
         const logs = [
             "> INITIALIZING XENOTED OS...",
             "> LOADING VERCEL_BYPASS_MODULE...",
-            "> INJECTING PAYLOAD... [OK]",
-            "> BRUTEFORCING ROOT_PASS...",
             "> ACCESS GRANTED.",
-            "> DOWNLOADING USER_DATA...",
-            "> ENCRYPTING SYSTEM...",
-            "> WIPING LOG FILES...",
             "> CONNECTION TERMINATED."
         ];
 
         function typeText(text, element) {
             return new Promise(resolve => {
                 let i = 0;
-                const speed = 15;
                 function type() {
                     if (i < text.length) {
-                        element.textContent += text.charAt(i);
-                        i++;
-                        setTimeout(type, speed);
+                        element.textContent += text.charAt(i); i++;
+                        setTimeout(type, 15);
                     } else { resolve(); }
                 }
                 type();
@@ -178,29 +155,22 @@
                 const line = document.createElement('div');
                 line.className = 'line';
                 terminal.appendChild(line);
-                
                 const cur = document.createElement('span');
                 cur.className = 'cursor';
                 line.appendChild(cur);
-
                 const txt = document.createTextNode("");
                 line.insertBefore(txt, cur);
-
                 await typeText(log, txt);
                 cur.remove();
                 await new Promise(r => setTimeout(r, 100));
             }
-
             await new Promise(r => setTimeout(r, 600));
             terminal.style.opacity = '0';
-
             await new Promise(r => setTimeout(r, 400));
             halo.classList.add('visible');
-
             await new Promise(r => setTimeout(r, 1500));
             finalContainer.style.display = 'block';
         }
-
         window.onload = start;
     </script>
 </body>
