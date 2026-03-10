@@ -26,7 +26,6 @@ body, html {
     backdrop-filter: blur(15px);
     opacity: 0;
     pointer-events: none;
-    /* Transition fluide optimisée GPU */
     transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: opacity;
     transform: translateZ(0);
@@ -93,8 +92,9 @@ body, html {
 .video-background video {
     width: 100%; height: 100%;
     object-fit: cover;
-    /* Teinte Matrix */
-    filter: brightness(0.3) contrast(1.2) sepia(100%) hue-rotate(90deg);
+    /* --- CORRECTION LUMINOSITÉ --- */
+    /* Brightness passée de 0.3 (30%) à 0.6 (60%) */
+    filter: brightness(0.6) contrast(1.2) sepia(100%) hue-rotate(90deg);
 }
 
 .content {

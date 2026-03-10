@@ -40,26 +40,32 @@
         const mainUi = document.getElementById('main-ui');
 
         button.addEventListener('click', () => {
-            // 1. Début du fondu de sortie de l'interface initiale
             mainUi.style.opacity = '0';
             
-            // On attend 500ms (la durée du fondu CSS) pour afficher le terminal
             setTimeout(() => {
                 terminalScreen.classList.add('active');
                 
-                // 2. Phase de chargement de 5 secondes
                 setTimeout(() => {
-                    // 3. Lancer le fondu de sortie du terminal
                     terminalScreen.style.opacity = '0';
-                    
-                    // 4. Redirection uniquement quand le fondu est physiquement terminé
-                    // Cela évite les flashs blancs sur les connexions lentes
                     terminalScreen.addEventListener('transitionend', () => {
                         window.location.href = "perso.html";
                     }, { once: true });
-                    
                 }, 5000);
             }, 500); 
+        });
+
+        // --- CORRECTION POUR LE RETOUR EN ARRIÈRE (BFCache) ---
+        // Cet événement se déclenche à chaque fois que la page est affichée,
+        // même lors d'un retour en arrière depuis le cache du navigateur.
+        window.addEventListener('pageshow', (event) => {
+            // Si la page vient d'être restaurée depuis le cache
+            if (event.persisted) {
+                // On réinitialise l'opacité du bouton
+                mainUi.style.opacity = '1';
+                // On cache le terminal s'il était resté visible
+                terminalScreen.classList.remove('active');
+                terminalScreen.style.opacity = '1'; // Reset l'opacité pour la prochaine fois
+            }
         });
     </script>
 </body>
