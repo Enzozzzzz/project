@@ -26,13 +26,13 @@
             position: fixed;
             top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.06));
             z-index: 20;
             background-size: 100% 3px, 3px 100%;
             pointer-events: none;
         }
 
-        /* Halo vert réduit pour ne pas déborder sur PC */
+        /* Halo vert optimisé */
         .background-halo {
             position: fixed;
             top: 50%; left: 50%;
@@ -47,8 +47,8 @@
 
         .background-halo.visible {
             opacity: 1;
-            width: 100vmax; /* Taille plus équilibrée */
-            height: 100vmax;
+            width: 150vmax;
+            height: 150vmax;
         }
 
         /* --- Terminal --- */
@@ -69,41 +69,48 @@
         }
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* --- Message Final (FORCÉ EN 2 LIGNES) --- */
+        /* --- Message Final (STRUCTURE FIXE) --- */
         .final-container {
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             z-index: 15;
             display: none;
-            text-align: center;
             width: 100%;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
+        /* Conteneur Flex pour forcer le bloc */
         .final-message {
             display: flex;
-            flex-direction: column; /* Force le retour à la ligne */
+            flex-direction: column; /* Force le retour à la ligne vertical */
             align-items: center;
+            text-align: center;
             font-weight: 900;
             color: #fff;
             text-transform: uppercase;
-            /* Police s'adaptant parfaitement à l'écran */
-            font-size: clamp(1.8rem, 10vw, 4rem);
-            line-height: 1.1;
-            letter-spacing: 0.2em;
+            /* clamp(Min, Mobile, Desktop) */
+            font-size: clamp(1.4rem, 8vw, 4rem); 
+            line-height: 1.2;
+            letter-spacing: 0.15em;
             text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00;
             animation: glitch 1s infinite, shake 0.3s infinite;
         }
 
-        .final-message span {
-            display: block; /* Force chaque bloc de texte sur sa ligne */
+        /* Force chaque segment sur sa propre ligne */
+        .msg-top, .msg-bottom {
+            display: block;
+            width: 100%;
+            white-space: nowrap; /* Empêche un mot de descendre tout seul */
         }
 
         /* --- Animations --- */
         @keyframes glitch {
             0% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; }
-            16% { text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff, -0.05em -0.05em 0 #fffc00; }
-            50% { text-shadow: 0.035em 0.05em 0 #00fffc, 0.05em 0 0 #fc00ff, 0 -0.05em 0 #fffc00; }
+            33% { text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff, -0.05em -0.05em 0 #fffc00; }
+            66% { text-shadow: 0.035em 0.05em 0 #00fffc, 0.05em 0 0 #fc00ff, 0 -0.05em 0 #fffc00; }
             100% { text-shadow: -0.025em 0 0 #00fffc, -0.025em -0.025em 0 #fc00ff, -0.025em -0.05em 0 #fffc00; }
         }
 
@@ -120,8 +127,8 @@
 
     <div id="final-container" class="final-container">
         <div class="final-message">
-            <span>YOU ARE GETTING</span>
-            <span>XENOTED</span>
+            <div class="msg-top">YOU ARE GETTING</div>
+            <div class="msg-bottom">XENOTED</div>
         </div>
     </div>
 
@@ -133,7 +140,12 @@
         const logs = [
             "> INITIALIZING XENOTED OS...",
             "> LOADING VERCEL_BYPASS_MODULE...",
+            "> INJECTING PAYLOAD... [OK]",
+            "> BRUTEFORCING ROOT_PASS...",
             "> ACCESS GRANTED.",
+            "> DOWNLOADING USER_DATA...",
+            "> ENCRYPTING SYSTEM...",
+            "> WIPING LOG FILES...",
             "> CONNECTION TERMINATED."
         ];
 
@@ -169,7 +181,7 @@
             await new Promise(r => setTimeout(r, 400));
             halo.classList.add('visible');
             await new Promise(r => setTimeout(r, 1500));
-            finalContainer.style.display = 'block';
+            finalContainer.style.display = 'flex'; // Utilise Flex au lieu de Block
         }
         window.onload = start;
     </script>
