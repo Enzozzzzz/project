@@ -65,24 +65,23 @@
             width: 8px; height: 1.1em;
             background: #00ff41;
             margin-left: 4px;
-            animation: blink 0.8s infinite;
+            animation: blinkCursor 0.8s infinite;
         }
-        @keyframes blink { 50% { opacity: 0; } }
+        @keyframes blinkCursor { 50% { opacity: 0; } }
 
-        /* --- Message Final (STRUCTURE FIXE) --- */
+        /* --- Message Final (STRUCTURE FIXE SUR 2 LIGNES) --- */
         .final-container {
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             z-index: 15;
-            display: none;
+            display: none; /* Caché par défaut */
             width: 100%;
             flex-direction: column;
             align-items: center;
             justify-content: center;
         }
 
-        /* Conteneur Flex pour forcer le bloc */
         .final-message {
             display: flex;
             flex-direction: column; /* Force le retour à la ligne vertical */
@@ -91,12 +90,11 @@
             font-weight: 900;
             color: #fff;
             text-transform: uppercase;
-            /* clamp(Min, Mobile, Desktop) */
-            font-size: clamp(1.4rem, 8vw, 4rem); 
+            font-size: clamp(1.4rem, 8vw, 4rem); /* Police massive mais adaptative */
             line-height: 1.2;
             letter-spacing: 0.15em;
             text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00;
-            animation: glitch 1s infinite, shake 0.3s infinite;
+            animation: glitchText 1s infinite, shakeContainer 0.3s infinite;
         }
 
         /* Force chaque segment sur sa propre ligne */
@@ -106,18 +104,34 @@
             white-space: nowrap; /* Empêche un mot de descendre tout seul */
         }
 
+        /* --- Message d'alerte rouge clignotant --- */
+        .alert-message {
+            margin-top: 20px; /* Espace après le message principal */
+            color: #ff0000; /* Rouge vif */
+            font-size: clamp(0.9rem, 4vw, 1.5rem);
+            font-weight: bold;
+            text-align: center;
+            letter-spacing: 0.1em;
+            text-transform: none; /* Garde la casse d'origine */
+            animation: blinkAlert 0.6s step-end infinite; /* Clignotement rapide */
+        }
+
         /* --- Animations --- */
-        @keyframes glitch {
+        @keyframes glitchText {
             0% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; }
             33% { text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff, -0.05em -0.05em 0 #fffc00; }
             66% { text-shadow: 0.035em 0.05em 0 #00fffc, 0.05em 0 0 #fc00ff, 0 -0.05em 0 #fffc00; }
             100% { text-shadow: -0.025em 0 0 #00fffc, -0.025em -0.025em 0 #fc00ff, -0.025em -0.05em 0 #fffc00; }
         }
 
-        @keyframes shake {
+        @keyframes shakeContainer {
             0% { transform: translate(1px, 1px); }
             50% { transform: translate(-1px, -1px); }
             100% { transform: translate(0, 0); }
+        }
+
+        @keyframes blinkAlert {
+            50% { opacity: 0; }
         }
     </style>
 </head>
@@ -128,8 +142,9 @@
     <div id="final-container" class="final-container">
         <div class="final-message">
             <div class="msg-top">YOU ARE GETTING</div>
-            <div class="msg-bottom">XENOTED</div>
+            <div class="msg-bottom">XENONED</div>
         </div>
+        <div class="alert-message">Xenon owns your phone</div>
     </div>
 
     <script>
@@ -138,7 +153,7 @@
         const halo = document.getElementById('halo');
 
         const logs = [
-            "> INITIALIZING XENOTED OS...",
+            "> INITIALIZING XENONED OS...",
             "> LOADING VERCEL_BYPASS_MODULE...",
             "> INJECTING PAYLOAD... [OK]",
             "> BRUTEFORCING ROOT_PASS...",
@@ -181,7 +196,7 @@
             await new Promise(r => setTimeout(r, 400));
             halo.classList.add('visible');
             await new Promise(r => setTimeout(r, 1500));
-            finalContainer.style.display = 'flex'; // Utilise Flex au lieu de Block
+            finalContainer.style.display = 'flex'; // Utilise Flex pour tout centrer
         }
         window.onload = start;
     </script>
