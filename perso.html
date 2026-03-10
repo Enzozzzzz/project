@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>SYSTEM_OVERRIDE</title>
+    <style>
+        body { 
+            margin: 0; 
+            background: #000; 
+            color: #00ff41; 
+            font-family: 'Courier New', monospace;
+            animation: fadeInPage 2s ease;
+        }
+
+        @keyframes fadeInPage {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .terminal-text { padding: 50px; font-size: 1.1rem; line-height: 1.8; }
+        .cursor { display: inline-block; width: 10px; height: 20px; background: #00ff41; animation: blink 1s infinite; vertical-align: middle; }
+        @keyframes blink { 50% { opacity: 0; } }
+    </style>
+</head>
+<body>
+    <div class="terminal-text">
+        <p>> CONNECTION ESTABLISHED...</p>
+        <p>> DECRYPTING RSA_KEYS... [SUCCESS]</p>
+        <p>> ACCESSING SECURE_STORAGE...</p>
+        <p>> WELCOME, ADMIN.<span class="cursor"></span></p>
+    </div>
+</body>
+</html>
