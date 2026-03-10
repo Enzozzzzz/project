@@ -38,39 +38,40 @@
         const button = document.getElementById('access-button');
         const terminalScreen = document.getElementById('terminal-screen');
         const mainUi = document.getElementById('main-ui');
-
-        // Fonction pour réinitialiser la page proprement
-        function resetInterface() {
-            mainUi.classList.remove('fade-out');
-            terminalScreen.classList.remove('active', 'fade-out');
-            console.log("Interface réinitialisée");
-        }
+        const loaderBox = document.querySelector('.terminal-loader');
 
         button.addEventListener('click', () => {
-            // 1. On cache l'UI principale
+            // 1. Cacher le bouton
             mainUi.classList.add('fade-out');
             
-            // 2. On affiche le terminal après un court délai
             setTimeout(() => {
+                // 2. Afficher le terminal
                 terminalScreen.classList.add('active');
                 
-                // 3. Temps d'attente de 5 secondes
                 setTimeout(() => {
-                    // 4. On fait disparaître le terminal
-                    terminalScreen.classList.add('fade-out');
+                    // 3. TRANSITION CRITIQUE : On passe au noir total
+                    // On rend le fond du wrapper totalement opaque et noir
+                    terminalScreen.style.background = "black";
+                    terminalScreen.style.backdropFilter = "none";
                     
-                    // 5. Redirection une fois le fondu terminé
+                    // On fait disparaître la boîte de texte du terminal
+                    loaderBox.style.opacity = '0';
+
+                    // 4. On attend que le noir soit bien installé avant de changer de page
                     setTimeout(() => {
                         window.location.href = "perso.html";
-                    }, 800);
-                }, 5000);
+                    }, 600);
+                }, 5000); // 5 secondes de loading
             }, 500); 
         });
 
-        // --- FIX : RETOUR EN ARRIÈRE & SYNC ---
+        // Reset pour le bouton "Retour" du navigateur
         window.addEventListener('pageshow', (event) => {
-            // Force le reset si on revient en arrière ou si la page est chargée
-            resetInterface();
+            mainUi.classList.remove('fade-out');
+            terminalScreen.classList.remove('active');
+            terminalScreen.style.background = ""; 
+            terminalScreen.style.backdropFilter = "";
+            loaderBox.style.opacity = '1';
         });
     </script>
 </body>

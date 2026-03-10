@@ -7,7 +7,7 @@ body, html {
     background-color: #000;
 }
 
-/* --- Vidéo (Luminosité augmentée à 0.7) --- */
+/* --- Vidéo (Luminosité corrigée) --- */
 .video-background {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -17,8 +17,8 @@ body, html {
 .video-background video {
     width: 100%; height: 100%;
     object-fit: cover;
-    /* On passe à 0.7 pour qu'on voit bien la vidéo */
-    filter: brightness(0.7) contrast(1.1) sepia(100%) hue-rotate(90deg);
+    /* Luminosité à 0.6 pour un bon compromis visuel */
+    filter: brightness(0.6) contrast(1.1) sepia(100%) hue-rotate(90deg);
 }
 
 /* --- Conteneurs --- */
@@ -43,11 +43,11 @@ body, html {
     backdrop-filter: blur(10px);
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.8s ease;
+    /* On ajoute background à la transition pour le passage au noir */
+    transition: opacity 0.8s ease, background 0.5s ease;
 }
 
-/* --- Classes d'animation (utilisées par le JS) --- */
-.active {
+.terminal-wrapper.active {
     opacity: 1 !important;
     pointer-events: auto !important;
 }
@@ -56,7 +56,7 @@ body, html {
     opacity: 0 !important;
 }
 
-/* --- Style Terminal Loader --- */
+/* --- Style Terminal (Uiverse) --- */
 .terminal-loader {
     border: 0.1em solid #333;
     background-color: #1a1a1a;
@@ -65,6 +65,7 @@ body, html {
     width: 16em;
     border-radius: 4px;
     position: relative;
+    transition: opacity 0.5s ease;
 }
 
 .terminal-header {
