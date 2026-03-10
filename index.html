@@ -39,33 +39,38 @@
         const terminalScreen = document.getElementById('terminal-screen');
         const mainUi = document.getElementById('main-ui');
 
+        // Fonction pour réinitialiser la page proprement
+        function resetInterface() {
+            mainUi.classList.remove('fade-out');
+            terminalScreen.classList.remove('active', 'fade-out');
+            console.log("Interface réinitialisée");
+        }
+
         button.addEventListener('click', () => {
-            mainUi.style.opacity = '0';
+            // 1. On cache l'UI principale
+            mainUi.classList.add('fade-out');
             
+            // 2. On affiche le terminal après un court délai
             setTimeout(() => {
                 terminalScreen.classList.add('active');
                 
+                // 3. Temps d'attente de 5 secondes
                 setTimeout(() => {
-                    terminalScreen.style.opacity = '0';
-                    terminalScreen.addEventListener('transitionend', () => {
+                    // 4. On fait disparaître le terminal
+                    terminalScreen.classList.add('fade-out');
+                    
+                    // 5. Redirection une fois le fondu terminé
+                    setTimeout(() => {
                         window.location.href = "perso.html";
-                    }, { once: true });
+                    }, 800);
                 }, 5000);
             }, 500); 
         });
 
-        // --- CORRECTION POUR LE RETOUR EN ARRIÈRE (BFCache) ---
-        // Cet événement se déclenche à chaque fois que la page est affichée,
-        // même lors d'un retour en arrière depuis le cache du navigateur.
+        // --- FIX : RETOUR EN ARRIÈRE & SYNC ---
         window.addEventListener('pageshow', (event) => {
-            // Si la page vient d'être restaurée depuis le cache
-            if (event.persisted) {
-                // On réinitialise l'opacité du bouton
-                mainUi.style.opacity = '1';
-                // On cache le terminal s'il était resté visible
-                terminalScreen.classList.remove('active');
-                terminalScreen.style.opacity = '1'; // Reset l'opacité pour la prochaine fois
-            }
+            // Force le reset si on revient en arrière ou si la page est chargée
+            resetInterface();
         });
     </script>
 </body>
