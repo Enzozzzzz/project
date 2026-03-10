@@ -23,7 +23,7 @@
     </div>
 
     <div class="video-background">
-        <video autoplay muted loop playsinline>
+        <video autoplay muted loop playsinline preload="auto">
             <source src="background.mp4" type="video/mp4">
         </video>
     </div>
@@ -40,21 +40,26 @@
         const mainUi = document.getElementById('main-ui');
 
         button.addEventListener('click', () => {
-            
+            // 1. Début du fondu de sortie de l'interface initiale
             mainUi.style.opacity = '0';
-            mainUi.style.transition = 'opacity 0.8s ease';
-
-            terminalScreen.classList.add('active');
             
+            // On attend 500ms (la durée du fondu CSS) pour afficher le terminal
             setTimeout(() => {
+                terminalScreen.classList.add('active');
                 
-                terminalScreen.style.opacity = '0';
-                terminalScreen.style.transition = 'opacity 1s ease';
-                
+                // 2. Phase de chargement de 5 secondes
                 setTimeout(() => {
-                    window.location.href = "perso.html"; 
-                }, 1000);
-            }, 5000); 
+                    // 3. Lancer le fondu de sortie du terminal
+                    terminalScreen.style.opacity = '0';
+                    
+                    // 4. Redirection uniquement quand le fondu est physiquement terminé
+                    // Cela évite les flashs blancs sur les connexions lentes
+                    terminalScreen.addEventListener('transitionend', () => {
+                        window.location.href = "perso.html";
+                    }, { once: true });
+                    
+                }, 5000);
+            }, 500); 
         });
     </script>
 </body>

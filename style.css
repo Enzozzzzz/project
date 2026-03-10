@@ -1,3 +1,9 @@
+/* --- Optimisations Performance --- */
+* {
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+}
+
 body, html {
     margin: 0;
     padding: 0;
@@ -8,7 +14,7 @@ body, html {
     background-color: #000;
 }
 
-
+/* --- Terminal Wrapper --- */
 .terminal-wrapper {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -18,9 +24,12 @@ body, html {
     z-index: 9999;
     background: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(15px);
-    opacity: 0; 
+    opacity: 0;
     pointer-events: none;
-    transition: opacity 0.8s ease;
+    /* Transition fluide optimisée GPU */
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: opacity;
+    transform: translateZ(0);
 }
 
 .terminal-wrapper.active {
@@ -28,7 +37,7 @@ body, html {
     pointer-events: auto;
 }
 
-
+/* --- Style du Terminal --- */
 .terminal-loader {
     border: 0.1em solid #222;
     background-color: #0a0a0a;
@@ -36,9 +45,10 @@ body, html {
     font-size: 1.2em;
     padding: 1.5em 1em;
     width: 16em;
-    box-shadow: 0 0 40px rgba(0, 255, 65, 0.1);
+    box-shadow: 0 0 40px rgba(0, 255, 65, 0.05);
     border-radius: 6px;
     position: relative;
+    transform: translateZ(0);
 }
 
 .terminal-header {
@@ -47,7 +57,6 @@ body, html {
     height: 1.5em;
     background-color: #222;
     padding: 0 0.4em;
-    box-sizing: border-box;
 }
 
 .terminal-controls { float: right; }
@@ -55,7 +64,7 @@ body, html {
 .control.close { background-color: #ff5f56; }
 .control.minimize { background-color: #ffbd2e; }
 .control.maximize { background-color: #27c93f; }
-.terminal-title { float: left; line-height: 1.5em; color: #999; font-size: 0.7em; }
+.terminal-title { float: left; line-height: 1.5em; color: #777; font-size: 0.7em; }
 
 .text {
     display: inline-block;
@@ -78,12 +87,14 @@ body, html {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
     z-index: 1;
+    background: #000;
 }
 
 .video-background video {
     width: 100%; height: 100%;
     object-fit: cover;
-    filter: brightness(0.3) grayscale(100%) sepia(100%) hue-rotate(90deg);
+    /* Teinte Matrix */
+    filter: brightness(0.3) contrast(1.2) sepia(100%) hue-rotate(90deg);
 }
 
 .content {
@@ -93,24 +104,26 @@ body, html {
     align-items: center;
     height: 100vh;
     z-index: 2;
-    opacity: 1;
+    transition: opacity 0.5s ease;
+    will-change: opacity;
 }
 
-
+/* --- Bouton Hacking --- */
 .glitch-btn {
     padding: 15px 40px;
     font-size: 18px;
     border: 1px solid #00ff41;
     color: #00ff41;
-    background: transparent;
+    background: rgba(0, 0, 0, 0.5);
     cursor: pointer;
     font-family: 'Courier New', monospace;
     letter-spacing: 3px;
     transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.1);
 }
 
 .glitch-btn:hover {
-    background: rgba(0, 255, 65, 0.1);
-    box-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
-    transform: scale(1.05);
+    background: #00ff41;
+    color: #000;
+    box-shadow: 0 0 25px #00ff41;
 }
