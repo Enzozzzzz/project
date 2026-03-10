@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SYSTEM_OVERRIDE</title>
     <style>
         body { 
@@ -14,9 +14,9 @@
             width: 100vw;
             display: flex;
             flex-direction: column;
-            padding: 20px; /* Marges pour le texte en haut à gauche */
+            padding: 5vw; /* Padding adaptatif */
             box-sizing: border-box;
-            overflow: hidden;
+            overflow: hidden; /* Crucial pour éviter le scroll durant le glitch */
         }
 
         /* --- Effet CRT / Scanlines --- */
@@ -38,7 +38,7 @@
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             width: 0; height: 0;
-            background: radial-gradient(circle, rgba(0, 255, 65, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+            background: radial-gradient(circle, rgba(0, 255, 65, 0.25) 0%, rgba(0, 0, 0, 0) 70%);
             border-radius: 50%;
             z-index: 1;
             opacity: 0;
@@ -47,26 +47,26 @@
 
         .background-halo.visible {
             opacity: 1;
-            width: 150vw;
-            height: 150vh;
+            width: 200vw; /* Augmenté pour couvrir les angles en rotation */
+            height: 200vw;
         }
 
         /* --- Terminal calé en haut à gauche --- */
         #terminal {
-            align-self: flex-start; /* Aligne au début (gauche) */
+            align-self: flex-start;
             width: 100%;
-            max-width: 900px;
+            max-width: 100%;
             white-space: pre-wrap;
             line-height: 1.4;
-            font-size: 1rem;
+            font-size: clamp(0.75rem, 2vw, 1rem); /* Taille adaptative */
             z-index: 5;
             transition: opacity 0.5s ease;
         }
 
-        .line { margin-bottom: 4px; }
+        .line { margin-bottom: 4px; overflow-wrap: break-word; }
         .cursor {
             display: inline-block;
-            width: 8px; height: 1.1rem;
+            width: 8px; height: 1.1em;
             background: #00ff41;
             margin-left: 4px;
             animation: blink 0.8s infinite;
@@ -74,7 +74,7 @@
         }
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* --- Message Final centré avec Glitch --- */
+        /* --- Container du Message Final --- */
         .final-container {
             position: absolute;
             top: 50%; left: 50%;
@@ -82,20 +82,25 @@
             z-index: 15;
             display: none;
             text-align: center;
+            width: 90%; /* Évite de toucher les bords sur mobile */
         }
 
         .final-message {
-            font-size: 3.5rem;
+            font-size: clamp(1.2rem, 8vw, 3.5rem); /* Scalabilité du texte */
             font-weight: 900;
             color: #fff;
             text-transform: uppercase;
-            letter-spacing: 10px;
+            letter-spacing: clamp(2px, 2vw, 10px);
             position: relative;
+            /* Glitch chromatique optimisé */
             text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00;
             animation: glitch 1s infinite;
+            word-wrap: break-word;
         }
 
-        /* Effet de secousse et distorsion du texte */
+        
+
+        /* --- Animations --- */
         @keyframes glitch {
             0% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; }
             15% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; }
@@ -106,7 +111,7 @@
             100% { text-shadow: -0.025em 0 0 #00fffc, -0.025em -0.025em 0 #fc00ff, -0.025em -0.05em 0 #fffc00; }
         }
 
-        /* Animation de tremblement de toute la box */
+        /* Tremblement de la box */
         .final-container.shake {
             animation: shake 0.4s infinite;
         }
@@ -120,9 +125,10 @@
             100% { transform: translate(-50%, -50%) translate(0, 0); }
         }
 
-        @media screen and (max-width: 768px) {
-            .final-message { font-size: 1.5rem; letter-spacing: 3px; }
-            #terminal { font-size: 0.85rem; }
+        /* --- Media Queries pour mobile paysage --- */
+        @media screen and (max-height: 500px) {
+            #terminal { font-size: 0.7rem; line-height: 1.1; }
+            .final-message { font-size: 1.2rem; }
         }
     </style>
 </head>
@@ -154,7 +160,7 @@
         function typeText(text, element) {
             return new Promise(resolve => {
                 let i = 0;
-                const speed = 15; // Vitesse rapide et constante
+                const speed = 15;
                 function type() {
                     if (i < text.length) {
                         element.textContent += text.charAt(i);
@@ -167,7 +173,6 @@
         }
 
         async function start() {
-            // 1. Déroulement du terminal (Haut gauche)
             for (const log of logs) {
                 const line = document.createElement('div');
                 line.className = 'line';
@@ -185,15 +190,12 @@
                 await new Promise(r => setTimeout(r, 100));
             }
 
-            // 2. Disparition rapide
             await new Promise(r => setTimeout(r, 600));
             terminal.style.opacity = '0';
 
-            // 3. Halo vert progressif
             await new Promise(r => setTimeout(r, 400));
             halo.classList.add('visible');
 
-            // 4. Message final avec gros glitch
             await new Promise(r => setTimeout(r, 1500));
             finalContainer.style.display = 'block';
         }
