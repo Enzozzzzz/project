@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SYSTEM_OVERRIDE</title>
     <style>
         body { 
@@ -9,29 +10,195 @@
             background: #000; 
             color: #00ff41; 
             font-family: 'Courier New', monospace;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            padding: 20px; /* Marges pour le texte en haut à gauche */
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        /* --- Effet CRT / Scanlines --- */
+        body::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            z-index: 20;
+            background-size: 100% 3px, 3px 100%;
+            pointer-events: none;
+        }
+
+        /* Halo vert en arrière-plan */
+        .background-halo {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 0; height: 0;
+            background: radial-gradient(circle, rgba(0, 255, 65, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+            border-radius: 50%;
+            z-index: 1;
             opacity: 0;
-            animation: fadeIn 1s ease forwards;
+            transition: opacity 2s ease, width 2.5s ease, height 2.5s ease;
         }
 
-        @keyframes fadeIn {
-            to { opacity: 1; }
+        .background-halo.visible {
+            opacity: 1;
+            width: 150vw;
+            height: 150vh;
         }
 
-        .terminal-text { padding: 30px; font-size: 1.1rem; line-height: 1.8; }
-        .cursor { display: inline-block; width: 8px; height: 18px; background: #00ff41; animation: blink 1s infinite; vertical-align: middle; }
+        /* --- Terminal calé en haut à gauche --- */
+        #terminal {
+            align-self: flex-start; /* Aligne au début (gauche) */
+            width: 100%;
+            max-width: 900px;
+            white-space: pre-wrap;
+            line-height: 1.4;
+            font-size: 1rem;
+            z-index: 5;
+            transition: opacity 0.5s ease;
+        }
+
+        .line { margin-bottom: 4px; }
+        .cursor {
+            display: inline-block;
+            width: 8px; height: 1.1rem;
+            background: #00ff41;
+            margin-left: 4px;
+            animation: blink 0.8s infinite;
+            vertical-align: middle;
+        }
         @keyframes blink { 50% { opacity: 0; } }
 
+        /* --- Message Final centré avec Glitch --- */
+        .final-container {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 15;
+            display: none;
+            text-align: center;
+        }
+
+        .final-message {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            position: relative;
+            text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00;
+            animation: glitch 1s infinite;
+        }
+
+        /* Effet de secousse et distorsion du texte */
+        @keyframes glitch {
+            0% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; }
+            15% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; }
+            16% { text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff, -0.05em -0.05em 0 #fffc00; }
+            49% { text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff, -0.05em -0.05em 0 #fffc00; }
+            50% { text-shadow: 0.035em 0.05em 0 #00fffc, 0.05em 0 0 #fc00ff, 0 -0.05em 0 #fffc00; }
+            99% { text-shadow: 0.035em 0.05em 0 #00fffc, 0.05em 0 0 #fc00ff, 0 -0.05em 0 #fffc00; }
+            100% { text-shadow: -0.025em 0 0 #00fffc, -0.025em -0.025em 0 #fc00ff, -0.025em -0.05em 0 #fffc00; }
+        }
+
+        /* Animation de tremblement de toute la box */
+        .final-container.shake {
+            animation: shake 0.4s infinite;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(-50%, -50%) translate(1px, 1px); }
+            20% { transform: translate(-50%, -50%) translate(-2px, -1px); }
+            40% { transform: translate(-50%, -50%) translate(2px, 2px); }
+            60% { transform: translate(-50%, -50%) translate(-1px, 1px); }
+            80% { transform: translate(-50%, -50%) translate(2px, -2px); }
+            100% { transform: translate(-50%, -50%) translate(0, 0); }
+        }
+
         @media screen and (max-width: 768px) {
-            .terminal-text { font-size: 0.9rem; padding: 20px; }
+            .final-message { font-size: 1.5rem; letter-spacing: 3px; }
+            #terminal { font-size: 0.85rem; }
         }
     </style>
 </head>
 <body>
-    <div class="terminal-text">
-        <p>> CONNECTION ESTABLISHED...</p>
-        <p>> DECRYPTING RSA_KEYS... [SUCCESS]</p>
-        <p>> ACCESSING SECURE_STORAGE...</p>
-        <p>> WELCOME, ADMIN.<span class="cursor"></span></p>
+    <div class="background-halo" id="halo"></div>
+    <div id="terminal"></div>
+
+    <div id="final-container" class="final-container shake">
+        <div class="final-message">YOU ARE GETTING XENOTED</div>
     </div>
+
+    <script>
+        const terminal = document.getElementById('terminal');
+        const finalContainer = document.getElementById('final-container');
+        const halo = document.getElementById('halo');
+
+        const logs = [
+            "> INITIALIZING XENOTED OS...",
+            "> LOADING VERCEL_BYPASS_MODULE...",
+            "> INJECTING PAYLOAD... [OK]",
+            "> BRUTEFORCING ROOT_PASS...",
+            "> ACCESS GRANTED.",
+            "> DOWNLOADING USER_DATA...",
+            "> ENCRYPTING SYSTEM...",
+            "> WIPING LOG FILES...",
+            "> CONNECTION TERMINATED."
+        ];
+
+        function typeText(text, element) {
+            return new Promise(resolve => {
+                let i = 0;
+                const speed = 15; // Vitesse rapide et constante
+                function type() {
+                    if (i < text.length) {
+                        element.textContent += text.charAt(i);
+                        i++;
+                        setTimeout(type, speed);
+                    } else { resolve(); }
+                }
+                type();
+            });
+        }
+
+        async function start() {
+            // 1. Déroulement du terminal (Haut gauche)
+            for (const log of logs) {
+                const line = document.createElement('div');
+                line.className = 'line';
+                terminal.appendChild(line);
+                
+                const cur = document.createElement('span');
+                cur.className = 'cursor';
+                line.appendChild(cur);
+
+                const txt = document.createTextNode("");
+                line.insertBefore(txt, cur);
+
+                await typeText(log, txt);
+                cur.remove();
+                await new Promise(r => setTimeout(r, 100));
+            }
+
+            // 2. Disparition rapide
+            await new Promise(r => setTimeout(r, 600));
+            terminal.style.opacity = '0';
+
+            // 3. Halo vert progressif
+            await new Promise(r => setTimeout(r, 400));
+            halo.classList.add('visible');
+
+            // 4. Message final avec gros glitch
+            await new Promise(r => setTimeout(r, 1500));
+            finalContainer.style.display = 'block';
+        }
+
+        window.onload = start;
+    </script>
 </body>
 </html>
