@@ -41,8 +41,6 @@
         const loaderBox = document.querySelector('.terminal-loader');
         const video = document.getElementById('bg-video');
 
-        // FORCE LA LECTURE SUR MOBILE : 
-        // Certains navigateurs bloquent l'autoplay sans une tentative explicite en JS
         window.addEventListener('load', () => {
             const playPromise = video.play();
             if (playPromise !== undefined) {
@@ -53,35 +51,35 @@
         });
 
         button.addEventListener('click', () => {
-            // 1. Cacher l'UI principale
+           
             mainUi.classList.add('fade-out');
             
             setTimeout(() => {
-                // 2. Afficher le terminal
+                
                 terminalScreen.classList.add('active');
                 
                 setTimeout(() => {
-                    // 3. Passage au noir total pour cacher le background
+                    
                     terminalScreen.style.background = "black";
                     terminalScreen.style.backdropFilter = "none";
                     loaderBox.style.opacity = '0';
 
-                    // 4. Redirection après installation du tampon noir
+                   
                     setTimeout(() => {
                         window.location.href = "perso.html";
                     }, 600);
-                }, 5000); // Temps de loading (5 sec)
+                }, 5000); 
             }, 500); 
         });
 
-        // FIX BFCache : réinitialise la page lors du retour en arrière
+        
         window.addEventListener('pageshow', (event) => {
             mainUi.classList.remove('fade-out');
             terminalScreen.classList.remove('active');
             terminalScreen.style.background = ""; 
             terminalScreen.style.backdropFilter = "";
             loaderBox.style.opacity = '1';
-            // Relance la vidéo si nécessaire au retour
+            
             video.play();
         });
     </script>
