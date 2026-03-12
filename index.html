@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TERMINAL - SYSTEM ACCESS</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* CSS additionnel pour s'assurer que la vidéo ne crée pas d'UI par défaut */
+        video::-webkit-media-controls {
+            display:none !important;
+        }
+    </style>
 </head>
 <body>
 
@@ -23,7 +29,16 @@
     </div>
 
     <div class="video-background">
-        <video id="bg-video" autoplay muted loop playsinline preload="auto">
+        <video 
+            id="bg-video" 
+            autoplay 
+            muted 
+            loop 
+            playsinline 
+            webkit-playsinline
+            preload="auto"
+            style="pointer-events: none;"
+        >
             <source src="background.mp4" type="video/mp4">
         </video>
     </div>
@@ -41,45 +56,43 @@
         const loaderBox = document.querySelector('.terminal-loader');
         const video = document.getElementById('bg-video');
 
-        window.addEventListener('load', () => {
-            const playPromise = video.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(() => {
-                    console.log("Lecture auto bloquée par le système, attente du clic.");
-                });
-            }
+        // GESTION AGRESSIVE DE L'AUTOPLAY MOBILE
+        function forceVideoPlay() {
+            video.play().catch(() => {
+                // Si l'autoplay échoue encore, on réessaie au premier toucher d'écran
+                document.addEventListener('touchstart', () => {
+                    video.play();
+                }, { once: true });
+            });
+        }
+
+        window.addEventListener('load', forceVideoPlay);
+        // On relance aussi au cas où l'onglet change
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') video.play();
         });
 
         button.addEventListener('click', () => {
-           
             mainUi.classList.add('fade-out');
-            
             setTimeout(() => {
-                
                 terminalScreen.classList.add('active');
-                
                 setTimeout(() => {
-                    
                     terminalScreen.style.background = "black";
                     terminalScreen.style.backdropFilter = "none";
                     loaderBox.style.opacity = '0';
-
-                   
                     setTimeout(() => {
                         window.location.href = "perso.html";
                     }, 600);
-                }, 5000); 
+                }, 5000);
             }, 500); 
         });
 
-        
         window.addEventListener('pageshow', (event) => {
             mainUi.classList.remove('fade-out');
             terminalScreen.classList.remove('active');
             terminalScreen.style.background = ""; 
             terminalScreen.style.backdropFilter = "";
             loaderBox.style.opacity = '1';
-            
             video.play();
         });
     </script>
